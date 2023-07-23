@@ -1,6 +1,6 @@
 const express=require('express');
 const cors=require('cors');
-// const AWS = require("aws-sdk");
+
 
 const {
   S3Client,
@@ -15,12 +15,6 @@ app.use(cors());
 
 const PORT=process.env.PORT || 8000;
 
-
-
-// const s3 = new AWS.S3({
-//   accessKeyId: process.env.accessKeyId,
-//   secretAccessKey: process.env.secretAccessKey,
-// });
 
 const BUCKET_NAME = "testbucketfp";
 
@@ -47,31 +41,7 @@ const run = async () => {
 
 
 
-// const listObjectsInBucket = async(bucketName) => {
-//     // Create the parameters for calling listObjects
-//     var bucketParams = {
-//         Bucket : BUCKET_NAME,
-//     };
-  
-//     // Call S3 to obtain a list of the objects in the bucket
-
-    
-//     const obj = s3.listObjects(bucketParams, function(err, data) {
-//         if (err) {
-//             console.log("Error", err);
-//             // return err;
-//         } else {
-//             console.log("Success", data);
-//             return data;
-//         }
-//     });
-
-//     return JSON.stringify(obj);
-// }
-
-
-app.get("/", async (req, res) => {
-    //    const variavle = await listObjectsInBucket(BUCKET_NAME); 
+app.get("/", async (req, res) => { 
         const variavle= await run();
        return res.status(200).json({data: variavle});
 });

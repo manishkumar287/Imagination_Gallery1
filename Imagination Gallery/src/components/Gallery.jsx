@@ -1,13 +1,12 @@
-import ImageList from "@mui/material/ImageList";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ImageListItem from "@mui/material/ImageListItem";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 
 const urls = "https://testbucketfp.s3.ap-south-1.amazonaws.com/";
 
 const f = (p) => {
-    
-    console.log(p,"###");
   for (let i = 0; i < p?.length; i++) {
     const url = p[i].Key.split(" ").join("+");
     p[i].Key = url;
@@ -15,63 +14,85 @@ const f = (p) => {
   return p;
 };
 
-export default function Gallery() {
+export default function Gallery(alignment) {
+
+  
   const [item, setItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
+
+  
 
   useEffect(() => {
     axios
       .get("http://localhost:8000/")
       .then(function (response) {
-        console.log(response.data.data.Contents,"@@@@");
         const d = f(response.data.data.Contents);
         setItem(d);
-        console.log(d);
       })
       .catch(function (error) {
         console.log(error);
       })
-      .finally(function () {});
-
-    //   axios.get(
-    //     "https://drive.google.com/drive/folders/1_qOJ0z3kI_e2IJq4X6HqF0T1ROBESygS?usp=drive_link"
-    //   ).then(function(response){
-    //     console.log(response," this is google drive part");
-    //   })
+      .finally(function () {});     
   }, []);
 
-//   console.log(item);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = item?.slice(indexOfFirstItem, indexOfLastItem);
 
-    return (
-      <>
-        {" "}
-        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-          {item?.map((item, i) => (
-             <ImageListItem key={i}>
-            <div>
+  
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      {alignment.alignment === "S3 Bucket" ? (
+        <Grid
+          container
+          spacing={{ xs: 1, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+        
+          {/* Display paginated data */}
+          {currentItems?.map((item, i) => (
+            <Grid item xs={2} sm={4} md={4} key={i} position="static">
               <img
-                // src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
                 src={`${urls}${item.Key}`}
-                // srcSet={`${i}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                // alt={item.title}
+                width={200}
+                height={200}
                 loading="lazy"
               />
-            </div>
-             </ImageListItem>
+            </Grid>
           ))}
-           {" "} 
-        </ImageList> 
-      </>
-    );
-  }
 
-//   return (
-//     <div>
-//     <h1>hello</h1>
-//       {item?.map((item, i) => (
-//         <div key={i}>
-//           <img src={`${urls}${item.Key}`} loading="lazy" />
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
+          {/* Pagination Controls */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              marginTop:490,
+              position: "absolute",
+              marginLeft:400,
+              
+            }}
+          >
+            <Button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentItems?.length < itemsPerPage}
+            >
+              Next
+            </Button>
+          </div>
+        </Grid>
+      ) : (
+        <h1>Google Drive</h1>
+      )}
+    </Box>
+    
+  );
+}

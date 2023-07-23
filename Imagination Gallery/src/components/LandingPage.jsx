@@ -4,32 +4,17 @@ import ImageListItemBar from "@mui/material/ImageListItemBar";
 import IconButton from "@mui/material/IconButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 
-// function srcset(
-//   image: string,
-//   width: number,
-//   height: number,
-//   rows = 1,
-//   cols = 1
-// ) {
-//   return {
-//     src: `${image}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`,
-//     srcSet: `${image}?w=${width * cols}&h=${
-//       height * rows
-//     }&fit=crop&auto=format&dpr=2 2x`,
-//   };
-// }
+
 
 export default function LandingPage() {
   return (
     <ImageList
       sx={{
         width: 700,
-        height: 700,
-        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-        transform: "translateZ(0)",
+        height: 600,
       }}
       rowHeight={200}
-      gap={1}
+      gap={2}
     >
       {itemData.map((item) => {
         const cols = item.featured ? 2 : 1;
@@ -38,10 +23,10 @@ export default function LandingPage() {
         return (
           <ImageListItem key={item.img} cols={cols} rows={rows}>
             <img
-            //   {...srcset(item.img, 250, 200, rows, cols)}
+            
               src={item.img}
               alt={item.title}
-              loading="lazy"
+              
             />
             <ImageListItemBar
               sx={{
